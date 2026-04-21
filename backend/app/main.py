@@ -38,3 +38,8 @@ app.include_router(strategy.router, prefix="/api/strategy", tags=["strategy"])
 @app.get("/")
 def root():
     return {"message": "Mangbing API"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
