@@ -229,16 +229,14 @@ def generate_report(draws: list[LottoDraw]) -> ReportData:
     # 페르소나별 추천 번호 1세트씩 생성
     def _make_persona_rec(title, icon, persona_key, reason) -> PersonaRec:
         sc = persona_map[persona_key]
-        result = recommend(stats, strategy=sc.key, count=1)[0]
+        results = recommend(stats, strategy=sc.key, count=5)
         return PersonaRec(
             title=title, icon=icon,
             strategy=sc.key, label=sc.label,
             total=sc.total, reason=reason,
-            numbers=result.numbers,
-            hot_count=result.hot_count,
-            neutral_count=result.neutral_count,
-            cold_count=result.cold_count,
-            balance_score=result.balance_score,
+            sets=[{'numbers': r.numbers, 'hot_count': r.hot_count,
+                   'neutral_count': r.neutral_count, 'cold_count': r.cold_count,
+                   'balance_score': r.balance_score} for r in results],
         )
 
     personas = [

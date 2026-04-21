@@ -72,6 +72,14 @@ class StrategyScore(BaseModel):
     pool_size: int
 
 
+class NumberSet(BaseModel):
+    numbers: list[int]
+    hot_count: int
+    neutral_count: int
+    cold_count: int
+    balance_score: float
+
+
 class PersonaRec(BaseModel):
     title: str
     icon: str
@@ -79,11 +87,7 @@ class PersonaRec(BaseModel):
     label: str
     total: int
     reason: str
-    numbers: list[int]       # 추천 번호 세트
-    hot_count: int
-    neutral_count: int
-    cold_count: int
-    balance_score: float
+    sets: list[NumberSet]    # 5세트 추천 번호
 
 
 class NotableNumber(BaseModel):

@@ -184,23 +184,23 @@ export default function ReportPage() {
                   적합도 {p.total}점
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
-                {p.numbers.map(n => {
-                  const zone = n <= 9 ? 'hot' : n <= 18 ? 'neutral' : 'cold'
-                  // 실제 zone은 백엔드에서 계산되므로 ball 색은 단순 표시
-                  return (
-                    <span key={n} style={{
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      width: 34, height: 34, borderRadius: '50%',
-                      background: n <= 10 ? '#eab308' : n <= 20 ? '#3b82f6' : n <= 30 ? '#ef4444' : n <= 40 ? '#a855f7' : '#10b981',
-                      color: '#fff', fontWeight: 700, fontSize: '0.85rem',
-                    }}>{n}</span>
-                  )
-                })}
-                <span style={{ fontSize: '0.75rem', color: '#64748b', marginLeft: 8 }}>
-                  🔥{p.hot_count} 〰{p.neutral_count} 🧊{p.cold_count}
-                  &nbsp;·&nbsp;균형 {p.balance_score}
-                </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+                {p.sets.map((s, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#475569', minWidth: 20 }}>#{i + 1}</span>
+                    {s.numbers.map(n => (
+                      <span key={n} style={{
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        width: 30, height: 30, borderRadius: '50%',
+                        background: n <= 10 ? '#eab308' : n <= 20 ? '#3b82f6' : n <= 30 ? '#ef4444' : n <= 40 ? '#a855f7' : '#10b981',
+                        color: '#fff', fontWeight: 700, fontSize: '0.78rem',
+                      }}>{n}</span>
+                    ))}
+                    <span style={{ fontSize: '0.7rem', color: '#475569' }}>
+                      🔥{s.hot_count} 〰{s.neutral_count} 🧊{s.cold_count} · 균형 {s.balance_score}
+                    </span>
+                  </div>
+                ))}
               </div>
               <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{p.reason}</div>
             </div>
