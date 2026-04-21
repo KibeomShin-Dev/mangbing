@@ -20,5 +20,8 @@ export const getAllDraws = () =>
 export const getNumberStats = () =>
   api.get('/analysis/stats').then(r => r.data)
 
+export const getReport = () =>
+  api.get('/analysis/report').then(r => r.data)
+
 export const getRecommendations = (strategy = 'balanced', count = 5) =>
   api.post('/strategy/recommend', { strategy, count }).then(r => r.data)

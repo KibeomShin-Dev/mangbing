@@ -60,6 +60,68 @@ class NumberStats(BaseModel):
     score: int
 
 
+class StrategyScore(BaseModel):
+    key: str
+    label: str
+    coverage: int        # 풀 커버리지 % (0-100)
+    comp_fit: int        # 구성 적합도 (0-100)
+    situ_fit: int        # 상황 적합도 (0-100)
+    total: int           # 종합 점수 (0-100)
+    rank_label: str      # 강력 추천 | 추천 | 보통 | 비추천
+    rank_color: str
+    pool_size: int
+
+
+class PersonaRec(BaseModel):
+    title: str
+    icon: str
+    strategy: str
+    label: str
+    total: int
+    reason: str
+
+
+class NotableNumber(BaseModel):
+    number: int
+    streak: int
+    score: int
+    recent_10: int
+
+
+class SegmentDist(BaseModel):
+    hot: int
+    neutral: int
+    cold: int
+
+
+class HistComp(BaseModel):
+    hot: float
+    neutral: float
+    cold: float
+
+
+class QualityGrade(BaseModel):
+    score: int
+    grade: str   # 황금기 | 호황기 | 보통기 | 침체기
+    icon: str
+    desc: str
+    color: str
+
+
+class ReportData(BaseModel):
+    total_draws: int
+    last_round: int
+    last_draw_date: date
+    next_round: int
+    seg_dist: SegmentDist
+    hist_comp: HistComp
+    quality: QualityGrade
+    strategy_scores: list[StrategyScore]
+    top_cold: list[NotableNumber]
+    top_hot: list[NotableNumber]
+    personas: list[PersonaRec]
+
+
 class StrategyRequest(BaseModel):
     strategy: str = "balanced"  # balanced | hotfocus | neutralfocus | coldfocus | experimental
     count: int = 5  # 추천 조합 수

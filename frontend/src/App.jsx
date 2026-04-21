@@ -2,11 +2,13 @@ import { useState } from 'react'
 import DBPage from './pages/DBPage'
 import AnalysisPage from './pages/AnalysisPage'
 import RecommendPage from './pages/RecommendPage'
+import ReportPage from './pages/ReportPage'
 
 const TABS = [
   { id: 'db',       label: 'DB 현황' },
   { id: 'analysis', label: '통계 분석' },
   { id: 'recommend',label: '번호 추천' },
+  { id: 'report',   label: '전략 리포트' },
 ]
 
 export default function App() {
@@ -42,6 +44,7 @@ export default function App() {
       {tab === 'db'        && <DBPage />}
       {tab === 'analysis'  && <AnalysisPage />}
       {tab === 'recommend' && <RecommendPage />}
+      {tab === 'report'    && <ReportPage />}
     </div>
   )
 }
