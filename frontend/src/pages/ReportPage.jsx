@@ -173,20 +173,36 @@ export default function ReportPage() {
 
       {/* 성향별 추천 */}
       <Card>
-        <SectionTitle>성향별 추천 전략</SectionTitle>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
+        <SectionTitle>성향별 추천 전략 + 번호</SectionTitle>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {personas.map(p => (
-            <div key={p.title} style={{ background: '#0f172a', borderRadius: 6, padding: '12px 14px' }}>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: 4 }}>
-                {p.icon} {p.title}
+            <div key={p.title} style={{ background: '#0f172a', borderRadius: 6, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>{p.icon} {p.title}</span>
+                <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#60a5fa' }}>{p.label}</span>
+                <span style={{ fontSize: '0.75rem', color: '#475569', marginLeft: 'auto' }}>
+                  적합도 {p.total}점
+                </span>
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#60a5fa', marginBottom: 4 }}>
-                {p.label}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
+                {p.numbers.map(n => {
+                  const zone = n <= 9 ? 'hot' : n <= 18 ? 'neutral' : 'cold'
+                  // 실제 zone은 백엔드에서 계산되므로 ball 색은 단순 표시
+                  return (
+                    <span key={n} style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 34, height: 34, borderRadius: '50%',
+                      background: n <= 10 ? '#eab308' : n <= 20 ? '#3b82f6' : n <= 30 ? '#ef4444' : n <= 40 ? '#a855f7' : '#10b981',
+                      color: '#fff', fontWeight: 700, fontSize: '0.85rem',
+                    }}>{n}</span>
+                  )
+                })}
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginLeft: 8 }}>
+                  🔥{p.hot_count} 〰{p.neutral_count} 🧊{p.cold_count}
+                  &nbsp;·&nbsp;균형 {p.balance_score}
+                </span>
               </div>
               <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{p.reason}</div>
-              <div style={{ fontSize: '0.75rem', color: '#475569', marginTop: 4 }}>
-                종합 점수: {p.total}
-              </div>
             </div>
           ))}
         </div>

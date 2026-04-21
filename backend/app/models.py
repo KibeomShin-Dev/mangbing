@@ -79,6 +79,11 @@ class PersonaRec(BaseModel):
     label: str
     total: int
     reason: str
+    numbers: list[int]       # 추천 번호 세트
+    hot_count: int
+    neutral_count: int
+    cold_count: int
+    balance_score: float
 
 
 class NotableNumber(BaseModel):

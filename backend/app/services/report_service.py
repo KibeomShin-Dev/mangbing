@@ -8,7 +8,8 @@ from app.models import (
     StrategyScore, PersonaRec, NotableNumber,
     SegmentDist, HistComp, QualityGrade, ReportData,
 )
-from app.services.analysis_service import compute_stats
+from app.services.analysis_service import compute_stats, compute_balance_score
+from app.services.strategy_service import recommend
 
 
 # ── 전략 정의 ──────────────────────────────────────────────────────────────
@@ -221,29 +222,30 @@ def generate_report(draws: list[LottoDraw]) -> ReportData:
     ]
 
     # 성향별 추천
-    score_by_persona = {strat['persona']: sc for strat, sc in zip(STRATEGIES, strategy_scores)
-                        if strat['persona']}
-    # strategy_scores는 정렬됐으므로 persona 매핑을 다시
+    # 정렬된 strategy_scores에서 persona 매핑
     persona_map = {s['persona']: next((sc for sc in strategy_scores if sc.key == s['key']), strategy_scores[0])
                    for s in STRATEGIES}
 
+    # 페르소나별 추천 번호 1세트씩 생성
+    def _make_persona_rec(title, icon, persona_key, reason) -> PersonaRec:
+        sc = persona_map[persona_key]
+        result = recommend(stats, strategy=sc.key, count=1)[0]
+        return PersonaRec(
+            title=title, icon=icon,
+            strategy=sc.key, label=sc.label,
+            total=sc.total, reason=reason,
+            numbers=result.numbers,
+            hot_count=result.hot_count,
+            neutral_count=result.neutral_count,
+            cold_count=result.cold_count,
+            balance_score=result.balance_score,
+        )
+
     personas = [
-        PersonaRec(title='기본 (모든 분)', icon='👤',
-                   strategy=persona_map['balanced'].key, label=persona_map['balanced'].label,
-                   total=persona_map['balanced'].total,
-                   reason='균형 잡힌 Hot/중립/Cold 배분으로 안정적.'),
-        PersonaRec(title='공격적',         icon='⚔️',
-                   strategy=persona_map['aggressive'].key, label=persona_map['aggressive'].label,
-                   total=persona_map['aggressive'].total,
-                   reason='Hot 번호 연속성·최근 흐름 중심 공략.'),
-        PersonaRec(title='보수적',         icon='🛡️',
-                   strategy=persona_map['conservative'].key, label=persona_map['conservative'].label,
-                   total=persona_map['conservative'].total,
-                   reason='Cold 번호 평균 회귀 기대, 장기 미출현 집중.'),
-        PersonaRec(title='데이터 기반',    icon='🔬',
-                   strategy=persona_map['data'].key, label=persona_map['data'].label,
-                   total=persona_map['data'].total,
-                   reason='V2.3 종합 점수 상위 번호 순수 통계 선택.'),
+        _make_persona_rec('기본 (모든 분)', '👤', 'balanced',     '균형 잡힌 Hot/중립/Cold 배분으로 안정적.'),
+        _make_persona_rec('공격적',         '⚔️', 'aggressive',   'Hot 번호 연속성·최근 흐름 중심 공략.'),
+        _make_persona_rec('보수적',         '🛡️', 'conservative', 'Cold 번호 평균 회귀 기대, 장기 미출현 집중.'),
+        _make_persona_rec('데이터 기반',    '🔬', 'data',          'V2.3 종합 점수 상위 번호 순수 통계 선택.'),
     ]
 
     last = draws[-1]
