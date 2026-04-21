@@ -1,0 +1,28 @@
+name: 주간 로또 DB 갱신
+
+on:
+  schedule:
+    # 매주 일요일 오전 10시 (KST) = UTC 01:00
+    # 토요일 추첨 후 다음 날 자동 갱신
+    - cron: '0 1 * * 0'
+  workflow_dispatch:  # 수동 실행 버튼
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 로또 DB 갱신 API 호출
+        run: |
+          HTTP_STATUS=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -X POST "${{ secrets.BACKEND_URL }}/api/lottery/update" \
+            -H "X-Update-Token: ${{ secrets.UPDATE_TOKEN }}" \
+            -H "Content-Type: application/json")
+
+          echo "HTTP 상태: $HTTP_STATUS"
+          echo "응답:"
+          cat /tmp/response.json
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "갱신 실패 (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
