@@ -20,6 +20,8 @@ for url in os.getenv("FRONTEND_URL", "").split(","):
     if url:
         _origins.append(url)
 
+print(f"[CORS] 허용 origins: {_origins}", flush=True)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins,
