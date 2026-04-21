@@ -13,10 +13,12 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Mangbing API", version="1.0.0")
 
 # 로컬 개발 + 프로덕션 프론트엔드 URL 모두 허용
-# FRONTEND_URL 환경변수로 Vercel 배포 URL 추가
+# FRONTEND_URL 환경변수로 Vercel 배포 URL 추가 (쉼표로 여러 개 가능)
 _origins = ["http://localhost:5173"]
-if os.getenv("FRONTEND_URL"):
-    _origins.append(os.getenv("FRONTEND_URL"))
+for url in os.getenv("FRONTEND_URL", "").split(","):
+    url = url.strip().rstrip("/")
+    if url:
+        _origins.append(url)
 
 app.add_middleware(
     CORSMiddleware,
